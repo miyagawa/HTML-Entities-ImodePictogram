@@ -2,7 +2,7 @@ package HTML::Entities::ImodePictogram;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 require Exporter;
@@ -14,17 +14,17 @@ require Exporter;
 my $one_byte  = '[\x00-\x7F\xA1-\xDF]';
 my $two_bytes = '[\x81-\x9F\xE0-\xFC][\x40-\x7E\x80-\xFC]';
 
-use vars qw($Pictogram_re $Sjis_re);
+use vars qw($Sjis_re $Pictogram_re);
+$Sjis_re      = qr<$one_byte|$two_bytes>;
 $Pictogram_re = '\xF8[\x9F-\xFC]|\xF9[\x40-\x7E\x80-\xAF]';
-$Sjis_re      = qr<$one_byte|$two_bytes|$Pictogram_re>;
 
 sub find_pictogram (\$&) {
     my($r_text, $callback) = @_;
 
     my $num_found = 0;
-    $$r_text =~ s{($Sjis_re)}{
+    $$r_text =~ s{(($Pictogram_re)|$Sjis_re)}{
 	my $orig_match = $1;
-	if ($orig_match =~ /^$Pictogram_re$/) {
+	if (defined $2) {
 	    $num_found++;
 	    $callback->($orig_match, unpack('n', $orig_match));
 	}

@@ -1,5 +1,8 @@
 Revision history for Perl extension HTML::Entities::ImodePictogram.
 
+0.04  Thu Aug 30 15:09:47 JST 2001
+	- Performance improved (slightly efficient regex matching)
+
 0.03  Thu Aug 30 14:14:15 JST 2001
 	- binary <=> number now handled via (un)?pack
 	  Thanks to SADAHIRO Tomoyuki <BQW10602@nifty.com>
