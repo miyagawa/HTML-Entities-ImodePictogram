@@ -1,6 +1,6 @@
 Revision history for Perl extension HTML::Entities::ImodePictogram.
 
-0.05
+0.05  Mon Aug  5 23:26:15 JST 2002
 	* Extended emoji support
 	  (Thanks to Eijiro Koike <hanabusa@edge.co.jp>)
 
