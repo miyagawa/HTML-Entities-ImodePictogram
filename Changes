@@ -1,0 +1,9 @@
+Revision history for Perl extension HTML::Entities::ImodePictogram.
+
+0.02  Thu Aug 30 02:57:02 JST 2001
+	- Add japanese documentation (ImodePictorgam.ja.pod)
+	- onto CPAN (thanks, PIA <pia@acrlinx.ne.jp>)
+
+0.01  Wed Aug 29 19:58:12 2001
+	- original version; created by h2xs 1.19
+

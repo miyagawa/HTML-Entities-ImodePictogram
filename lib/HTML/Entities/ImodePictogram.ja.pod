@@ -1,0 +1,92 @@
+=head1 NAME
+
+HTML::Entities::ImodePictogram - i-mode用絵文字のエンコード/デコード
+
+=head1 SYNOPSIS
+
+  use HTML::Entities::ImodePictogram;
+
+  $html      = encode_pictogram($rawtext);
+  $rawtext   = decode_pictogram($html);
+  $cleantext = remove_pictogram($rawtext);
+
+  use HTML::Entities::ImodePictogram qw(find_pictogram);
+
+  $num_found = find_pictogram($rawtext, \&callback);
+
+=head1 DESCRIPTION
+
+HTML::Entities::ImodePictogram は、 Shift_JIS プライベート領域に割り当てられた、i-mode用絵文字を処理するモジュールです。
+
+i-mode用絵文字についての詳細は、http://www.nttdocomo.co.jp/i/tag/emoji/index.html をご覧ください。
+
+=head1 FUNCTIONS
+
+このモジュールのすべての関数では、入出力の文字列は Shift_JIS でエンコードされていると想定しています。Shift_JIS と EUC-JP や UTF8 など他のエンコーディングとのコード変換については、L<Jcode> をご覧ください。
+
+このモジュールは以下の関数をデフォルトでエクスポートします。
+
+=over 4
+
+=item encode_pictogram
+
+  $html = encode_pictogram($rawtext);
+
+テキストに含まれる i-mode用絵文字をHTML数値参照にエンコードします。
+
+=item decode_pictogram
+
+  $rawtext = decode_pictogram($html);
+
+i-mode用絵文字のHTML数値参照を、実体にデコードします。
+
+=item remove_pictogram
+
+  $cleantext = remove_pictogram($rawtext);
+
+テキストに含まれる i-mode用絵文字を削除します。
+
+=back
+
+このモジュールは以下の関数を必要ならばエクスポートします。
+
+=over 4
+
+=item find_pictogram
+
+  $num_found = find_pictorgram($rawtext, \&callback);
+
+テキスト中の i-mode用絵文字を探して、見つかったらそれぞれに対してコールバック関数を実行します。見つかった絵文字の数を返します。
+
+コールバック関数には2つの引数が渡ります。1つめは見つかった絵文字のバイナリそのもの、2つめはその絵文字のコードポイントを示す10進数の数字です。コールバック関数の返り値によって、もとのテキストは置換されます。
+
+encode_pictogram() の実装を紹介します。find_pictorgram() の使い方のよい例になるでしょう。
+
+  sub encode_pictogram {
+      my $text = shift;
+      find_pictogram($text, sub {
+			 my($bin, $number) = @_;
+			 return '&#' . $number . ';';
+		     });
+      return $text;
+  }
+
+=back
+
+=head1 CAVEAT
+
+テキスト中のC<すべて>の文字にマッチする正規表現を利用しているため、このモジュールの動作は遅いです。これは、Shift_JIS の文字境界を見つけるには、すべてマッチさせるしかないのが原因です。
+
+=head1 AUTHOR
+
+Tatsuhiko Miyagawa <miyagawa@bulknews.net>
+
+This library is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<HTML::Entities>, http://www.nttdocomo.co.jp/i/tag/emoji/index.html
+
+=cut
+
