@@ -2,7 +2,7 @@ package HTML::Entities::ImodePictogram;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 require Exporter;
@@ -26,7 +26,7 @@ sub find_pictogram (\$&) {
 	my $orig_match = $1;
 	if ($orig_match =~ /^$Pictogram_re$/) {
 	    $num_found++;
-	    $callback->($orig_match, _bin2num($orig_match));
+	    $callback->($orig_match, unpack('n', $orig_match));
 	}
 	else {
 	    $orig_match;
@@ -51,7 +51,7 @@ sub decode_pictogram {
 	if (($2 >= 63647 && $2 <= 63740) ||
 	    ($2 >= 63808 && $2 <= 63870) ||
 	    ($2 >= 63872 && $2 <= 63919)) {
-	    _num2bin($2);
+	    pack 'n', $2;
 	}
 	else {
 	    $1;
@@ -66,19 +66,6 @@ sub remove_pictogram {
 		       return '';
 		   });
     return $text;
-}
-
-sub _num2bin {
-    my $num = shift;
-    my $hex = sprintf '%x', $num;
-    $hex =~ s/([0-9a-f]{2})/chr(hex($1))/ge;
-    return $hex;
-}
-
-sub _bin2num {
-    my $bin = shift;
-    $bin =~ s/(.)(.)/256 * ord($1) + ord($2)/eg;
-    return $bin;
 }
 
 1;
