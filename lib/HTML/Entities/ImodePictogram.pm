@@ -55,16 +55,11 @@ sub decode_pictogram {
     my $html = shift;
     $html =~ s{(\&\#(\d{5});)|(\&\#x([0-9a-fA-F]{4});)}{
 	if (defined $1) {
-	    if (($2 >= 63647 && $2 <= 63740) ||
-		($2 >= 63808 && $2 <= 63870) ||
-		($2 >= 63872 && $2 <= 63919)) {
-		pack 'n', $2;
-	    } else {
-		$1;
-	    }
+	    my $cp = _num2cp($2);
+	    defined $cp ? pack('n', $2) : $1;
 	} elsif (defined $3) {
-	    my $cp = hex($4);
-	    pack 'n', _cp2num($cp);
+	    my $num = _cp2num(hex($4));
+	    defined $num ? pack('n', $num) : $3;
 	}
     }eg;
     return $html;
@@ -90,8 +85,6 @@ sub _num2cp {
 	     ($num >= 63921 && $num <= 63996)) {
 	return $num - 4773;
     } else {
-	require Carp;
-	Carp::carp("unknown number: $num");
 	return;
     }
 }
@@ -108,8 +101,6 @@ sub _cp2num {
 	     ($cp >= 59148 && $cp <= 59223)) {
 	return $cp + 4773;
     } else {
-	require Carp;
-	Carp::carp("unknown codepoint: $cp");
 	return;
     }
 }
@@ -191,8 +182,9 @@ found. It returns the total numbers of charcters found in text.
 
 The callback is given three arguments. The first is a found pictogram
 character itself, and the second is a decimal number which represents
-codepoint of the character. The third is a Unicode codepoint. Whatever
-the callback returns will replace the original text.
+Shift_JIS codepoint of the character. The third is a Unicode
+codepoint. Whatever the callback returns will replace the original
+text.
 
 Here is a stub implementation of encode_pictogram(), which will be the
 good example for the usage of find_pictogram(). Note that this example
